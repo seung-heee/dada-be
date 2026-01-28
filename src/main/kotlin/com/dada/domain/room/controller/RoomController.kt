@@ -4,6 +4,8 @@ import com.dada.domain.room.dto.RoomRequest
 import com.dada.domain.room.dto.RoomResponse
 import com.dada.domain.room.entity.Room
 import com.dada.domain.room.service.RoomService
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-
+@Tag(name = "Room", description = "방 생성 및 조회 관련 API")
 @RestController
 @RequestMapping("/api/rooms")
 class RoomController(private val roomService: RoomService) {
@@ -22,6 +24,7 @@ class RoomController(private val roomService: RoomService) {
      * POST /api/rooms
      * 방 생성 API
      */
+    @Operation(summary = "새로운 방 생성", description = "방 이름, 후보 날짜, 초대 멤버를 입력받아 새로운 방을 생성하고 roomId(NanoID)를 반환합니다.")
     @PostMapping
     fun createRoom(
         @RequestBody @Valid request: RoomRequest
@@ -39,6 +42,7 @@ class RoomController(private val roomService: RoomService) {
      * GET /api/rooms/{roomId}
      * 방 상세 조회 API
      */
+    @Operation(summary = "방 상세 정보 조회", description = "roomId를 통해 특정 방의 상세 정보를 조회합니다.")
     @GetMapping("/{roomId}")
     fun getRoom(
         @PathVariable() roomId: String,
