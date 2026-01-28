@@ -1,6 +1,7 @@
 package com.dada.domain.room.service
 
 import com.dada.domain.room.dto.RoomRequest
+import com.dada.domain.room.dto.RoomResponse
 import com.dada.domain.room.entity.Room
 import com.dada.domain.room.repository.RoomRepository
 import org.springframework.stereotype.Service
@@ -30,6 +31,15 @@ class RoomService(private val roomRepository: RoomRepository) {
         // 4. 생성된 roomId 반환
         return generatedRoomId
     }
+
+    @Transactional(readOnly = true)
+    fun getRoom(roomId: String): RoomResponse {
+        val room = roomRepository.findByRoomId(roomId)
+            ?: throw NoSuchElementException("해당하는 방을 찾을 수 없습니다: $roomId")
+
+        return RoomResponse.from(room)
+    }
+
 
     private fun generateNanoId(): String {
         val alphabet = "23456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ"
