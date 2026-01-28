@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: dada-be
+
+  data:
+    mongodb:
+      connection-string: mongodb://localhost:27017/dada
+
+server:
+  port: 8080
+  error:
+    include-message: always

@@ -1,0 +1,13 @@
+# 서버가 데이터를 저장할 수 있게 Docker로 몽고DB 띄우기 위한 파일
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: dada-mongodb
+    ports:
+      - "27017:27017" # 로컬의 27017 포트와 컨테이너의 27017 포트를 연결
+    volumes:
+      - mongodb_data:/data/db # 데이터가 사라지지 않게 저장하는 공간
+
+volumes:
+  mongodb_data:
