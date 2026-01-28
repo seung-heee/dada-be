@@ -12,7 +12,7 @@ data class RoomResponse(
     val createAt: LocalDateTime,
 ) {
     companion object {
-//         엔티티를 응답 DTO로 변환해주는 편리한 메서드
+//         엔티티를 응답 DTO로 변환해주는 메서드
         fun from(room: Room) = RoomResponse(
             roomId = room.roomId,
             name = room.name,
