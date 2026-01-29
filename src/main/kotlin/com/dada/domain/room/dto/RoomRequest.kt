@@ -14,5 +14,5 @@ data class RoomRequest(
 
     @get:Schema(description = "투표 가능한 후보 날짜 리스트 (ISO-8601 형식)", example = "['2026-02-06', '2026-02-07']")
     @field:NotEmpty(message = "후보 날짜는 최소 하나 이상이어야 합니다.")
-    val availableDates: List<String>
+    val candidateDates: List<String>
 )

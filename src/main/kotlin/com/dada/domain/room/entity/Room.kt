@@ -15,6 +15,6 @@ data class Room(
 
     val name: String,
     val invitedMembers: List<String> = emptyList(),
-    val availableDates: List<String>,
+    val candidateDates: List<String> = emptyList(),
     val createdAt: LocalDateTime = LocalDateTime.now(),
 )

@@ -8,7 +8,7 @@ data class RoomResponse(
     val roomId: String,
     val name: String,
     val invitedMembers: List<String>,
-    val availableMembers: List<String>,
+    val candidateDates: List<String>,
     val createAt: LocalDateTime,
 ) {
     companion object {
@@ -17,7 +17,7 @@ data class RoomResponse(
             roomId = room.roomId,
             name = room.name,
             invitedMembers = room.invitedMembers,
-            availableMembers = room.availableDates,
+            candidateDates = room.candidateDates,
             createAt = room.createdAt
         )
             }

@@ -22,7 +22,7 @@ class RoomService(private val roomRepository: RoomRepository) {
             roomId = generatedRoomId,
             name = request.name,
             invitedMembers = request.invitedMembers,
-            availableDates = request.availableDates
+            candidateDates = request.candidateDates
         )
 
         // 3. DB 저장
