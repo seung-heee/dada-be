@@ -2,7 +2,9 @@ package com.dada.domain.room.service
 
 import com.dada.domain.room.dto.RoomRequest
 import com.dada.domain.room.dto.RoomResponse
+import com.dada.domain.room.dto.VoteRequest
 import com.dada.domain.room.entity.Room
+import com.dada.domain.room.entity.Vote
 import com.dada.domain.room.repository.RoomRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -32,6 +34,10 @@ class RoomService(private val roomRepository: RoomRepository) {
         return generatedRoomId
     }
 
+    /**
+     * roomId로 방 상세 정보를 조회한다.
+     *
+     */
     @Transactional(readOnly = true)
     fun getRoom(roomId: String): RoomResponse {
         val room = roomRepository.findByRoomId(roomId)
@@ -40,6 +46,24 @@ class RoomService(private val roomRepository: RoomRepository) {
         return RoomResponse.from(room)
     }
 
+    /**
+     * 참여자가 가능한 날짜를 투표한다.
+     * 참여자가 투표한 결과가 있으면 갈아끼우고, 없으면 새로 추가한다.
+     */
+    fun addOrUpdateVote(roomId: String, request: VoteRequest) {
+        val room = roomRepository.findByRoomId(roomId)
+            ?: throw NoSuchElementException("해당하는 방을 찾을 수 없습니다: $roomId")
+
+        // 기존 투표가 있다면 먼저 제거
+        room.votes.removeIf { it.memberName == request.memberName }
+
+        // 새로운 투표 데이터 생성 및 리스트에 추가
+        val newVote = request.toEntity()
+        room.votes.add(newVote)
+
+        // 변경된 방 정보를 저장
+        roomRepository.save(room)
+    }
 
     private fun generateNanoId(): String {
         val alphabet = "23456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ"

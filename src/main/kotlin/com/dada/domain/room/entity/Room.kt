@@ -16,5 +16,11 @@ data class Room(
     val name: String,
     val invitedMembers: List<String> = emptyList(),
     val candidateDates: List<String> = emptyList(),
+    val votes: MutableList<Vote> = mutableListOf(),
     val createdAt: LocalDateTime = LocalDateTime.now(),
+)
+
+data class Vote(
+    val memberName: String,
+    val selectedDated: List<String>,
 )

@@ -2,7 +2,7 @@ package com.dada.domain.room.controller
 
 import com.dada.domain.room.dto.RoomRequest
 import com.dada.domain.room.dto.RoomResponse
-import com.dada.domain.room.entity.Room
+import com.dada.domain.room.dto.VoteRequest
 import com.dada.domain.room.service.RoomService
 import com.dada.global.common.BaseResponse
 import io.swagger.v3.oas.annotations.Operation
@@ -32,17 +32,13 @@ class RoomController(private val roomService: RoomService) {
     ): ResponseEntity<BaseResponse<Map<String, String>> >{
 //        서비스에서 비즈니스 로직 실행 후 roomId 받음
         val roomId = roomService.createRoom(request)
-        val resultData = mapOf("roonId" to roomId)
+        val response = mapOf("roomId" to roomId)
 
 //        결과(roomId)를 응답에 담아서 반환
         return ResponseEntity
             .status(HttpStatus.CREATED)
             .body(
-                BaseResponse(
-                    status = "SUCCESS",
-                    message = "방이 성공적으로 생성되었습니다.",
-                    data = resultData
-                )
+                BaseResponse.ok(response)
             )
 
     }
@@ -59,12 +55,21 @@ class RoomController(private val roomService: RoomService) {
         val response = roomService.getRoom(roomId)
 
         return ResponseEntity.ok(
-            BaseResponse(
-                status = "SUCCESS",
-                message = "조회 성공",
-                data = response
-            )
+            BaseResponse.ok(response)
         )
     }
 
+    /**
+     * POST /api/rooms/{roomId}/votes
+     * 참여 가능한 날짜 투표 API
+     */
+    @PostMapping("/{roomId}/votes")
+    fun voteForRoom(
+        @PathVariable roomId: String,
+        @RequestBody request: VoteRequest
+    ): ResponseEntity<BaseResponse<Unit>> {
+        roomService.addOrUpdateVote(roomId, request)
+        return ResponseEntity.ok(BaseResponse.ok()
+        )
+    }
 }
