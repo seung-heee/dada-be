@@ -1,11 +1,13 @@
 package com.dada.domain.room.controller
 
+import com.dada.domain.room.dto.DashboardResponse
 import com.dada.domain.room.dto.RoomRequest
 import com.dada.domain.room.dto.RoomResponse
 import com.dada.domain.room.dto.VoteRequest
 import com.dada.domain.room.service.RoomService
 import com.dada.global.common.BaseResponse
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
@@ -63,6 +65,7 @@ class RoomController(private val roomService: RoomService) {
      * POST /api/rooms/{roomId}/votes
      * 참여 가능한 날짜 투표 API
      */
+    @Operation(summary = "참여자 투표", description = "참여자가 참여 가능한 날짜에 투표합니다.")
     @PostMapping("/{roomId}/votes")
     fun voteForRoom(
         @PathVariable roomId: String,
@@ -71,5 +74,17 @@ class RoomController(private val roomService: RoomService) {
         roomService.addOrUpdateVote(roomId, request)
         return ResponseEntity.ok(BaseResponse.ok()
         )
+    }
+
+    @Operation(
+        summary = "대시보드 데이터 조회",
+        description = "특정 방의 투표 현황, TOP 3 날짜, 참여자 및 미참여자 정보를 조회합니다."
+    )
+    @GetMapping("/{roomId}/dashboard")
+    fun getDashboard(
+        @PathVariable roomId: String,
+    ): ResponseEntity<BaseResponse<DashboardResponse>> {
+        val result = roomService.getRoomDashboard(roomId)
+        return ResponseEntity.ok(BaseResponse.ok(result))
     }
 }

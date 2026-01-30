@@ -1,7 +1,9 @@
 package com.dada.domain.room.service
 
+import com.dada.domain.room.dto.DashboardResponse
 import com.dada.domain.room.dto.RoomRequest
 import com.dada.domain.room.dto.RoomResponse
+import com.dada.domain.room.dto.TopScheduleDto
 import com.dada.domain.room.dto.VoteRequest
 import com.dada.domain.room.entity.Room
 import com.dada.domain.room.entity.Vote
@@ -63,6 +65,36 @@ class RoomService(private val roomRepository: RoomRepository) {
 
         // 변경된 방 정보를 저장
         roomRepository.save(room)
+    }
+
+    /**
+     * dashboard
+     */
+    fun getRoomDashboard(roomId: String): DashboardResponse {
+        val room = roomRepository.findByRoomId(roomId)
+            ?: throw NoSuchElementException("방을 찾을 수 없습니다.")
+
+        // 투표를 완료한 사람 리스트 추출
+        val votedMembers = room.votes.map { it.memberName }
+
+        // 날짜별 참여 가능 인원 계산 및 TOP 3 정렬
+        val topSchedules = room.candidateDates.map { date ->
+            val available = room.votes
+                .filter { it.selectedDates.contains(date) }
+                .map { it.memberName }
+
+            TopScheduleDto(date = date, availableMembers = available)
+        }
+            .filter { it.availableMembers.isNotEmpty() }
+            .sortedByDescending { it.availableMembers.size }
+            .take(3)
+
+        return DashboardResponse(
+            meetingName = room.name,
+            totalMembers = room.invitedMembers,
+            votedMembers = votedMembers,
+            topSchedules = topSchedules
+        )
     }
 
     private fun generateNanoId(): String {

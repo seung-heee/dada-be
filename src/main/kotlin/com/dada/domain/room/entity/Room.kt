@@ -22,5 +22,5 @@ data class Room(
 
 data class Vote(
     val memberName: String,
-    val selectedDated: List<String>,
+    val selectedDates: List<String>,
 )
