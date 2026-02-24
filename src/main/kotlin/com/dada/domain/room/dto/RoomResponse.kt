@@ -8,6 +8,7 @@ data class RoomResponse(
     val name: String,
     val invitedMembers: List<String>,
     val candidateDates: List<String>,
+    val participantNames: List<String>,
     val createAt: LocalDateTime,
 ) {
     companion object {
@@ -17,6 +18,7 @@ data class RoomResponse(
             name = room.name,
             invitedMembers = room.invitedMembers,
             candidateDates = room.candidateDates,
+            participantNames = room.votes.map { it.memberName },
             createAt = room.createdAt
         )
     }

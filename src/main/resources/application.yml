@@ -2,13 +2,18 @@ spring:
   application:
     name: dada-be
 
-  data:
+  spring:
+    # 1. 최신 버전에서 선호하는 경로
     mongodb:
-      uri: mongodb+srv://admin:admin@cluster0.cob5myt.mongodb.net/?appName=Cluster0
-  mongodb:
-    uri: mongodb+srv://admin:admin@cluster0.cob5myt.mongodb.net/?appName=Cluster0
+      uri: ${SPRING_MONGODB_URI:mongodb+srv://admin:admin@cluster0.cob5myt.mongodb.net/dada?retryWrites=true&w=majority}
+
+    # 2. 기존 경로 (혹시 모르니 유지)
+    data:
+      mongodb:
+        uri: ${SPRING_DATA_MONGODB_URI:mongodb+srv://admin:admin@cluster0.cob5myt.mongodb.net/dada?retryWrites=true&w=majority}
 
 server:
+  forward-headers-strategy: native
   port: 8080
   error:
     include-message: always
@@ -22,3 +27,5 @@ springdoc:
     tags-sorter: alpha
   api-docs:
     path: /v3/api-docs
+
+

@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  dada-be:
+    image: seungheee/dada-be:latest
+    container_name: dada-be
+    ports:
+      - "8080:8080"
+    environment:
+      - JAVA_OPTS=-Xmx300M -Xms300M
+      - SPRING_DATA_MONGODB_URI=mongodb+srv://admin:admin@cluster0.cob5myt.mongodb.net/dada?retryWrites=true&w=majority
+    restart: always

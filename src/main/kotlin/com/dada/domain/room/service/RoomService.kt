@@ -26,7 +26,7 @@ class RoomService(private val roomRepository: RoomRepository) {
             roomId = generatedRoomId,
             name = request.name,
             invitedMembers = request.invitedMembers,
-            candidateDates = request.candidateDates
+            candidateDates = request.candidateDates,
         )
 
         // 3. DB 저장
@@ -77,8 +77,7 @@ class RoomService(private val roomRepository: RoomRepository) {
         // 투표를 완료한 사람 리스트 추출
         val votedMembers = room.votes.map { it.memberName }
 
-        // 날짜별 참여 가능 인원 계산 및 TOP 3 정렬
-        val topSchedules = room.candidateDates.map { date ->
+        val allSchedules = room.candidateDates.map { date ->
             val available = room.votes
                 .filter { it.selectedDates.contains(date) }
                 .map { it.memberName }
@@ -87,13 +86,27 @@ class RoomService(private val roomRepository: RoomRepository) {
         }
             .filter { it.availableMembers.isNotEmpty() }
             .sortedByDescending { it.availableMembers.size }
-            .take(3)
+            .take(10)
+
+        var currentRank = 0
+        var lastSize = -1
+
+        val topSchedules = allSchedules.map { dto ->
+            if (dto.availableMembers.size != lastSize) {
+                currentRank++
+                lastSize = dto.availableMembers.size
+            }
+            dto.copy(rank = currentRank) // 현재 순위를 주입해서 복사
+        }
+
+        val hasInvitedMembers = room.invitedMembers.isNotEmpty()
 
         return DashboardResponse(
             meetingName = room.name,
             totalMembers = room.invitedMembers,
             votedMembers = votedMembers,
-            topSchedules = topSchedules
+            topSchedules = topSchedules,
+            hasInvitedMembers = hasInvitedMembers
         )
     }
 
